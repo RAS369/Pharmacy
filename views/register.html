@@ -1,0 +1,57 @@
+<style>
+    .login-bg {
+        background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    }
+</style>
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light login-bg">
+
+    <div class="row w-75 bg-white rounded-4 shadow overflow-hidden">
+        <div class="col-md-6 d-flex align-items-center justify-content-center p-5">
+            <img src="assets/img/login.jpg" class="img-fluid" style="max-height:350px;">
+        </div>
+
+        <div class="col-md-6 p-5">
+            <h2 class="fw-bold mb-4 text-center">Create an account</h2>
+            <form name="RegisterForm" ng-submit="register()" novalidate>
+
+                <div class="mb-2">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control mb-2" name="username" ng-model="user.username" required>
+                    <span class="text-danger" ng-show="RegisterForm.username.$touched && RegisterForm.username.$invalid">
+                        <span ng-if="RegisterForm.username.$error.required">Username is required.</span>
+                    </span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control mb-2" name="email" ng-model="user.email" required>
+                    <span class="text-danger" ng-show="RegisterForm.email.$touched && RegisterForm.email.$invalid">
+                        <span ng-if="RegisterForm.email.$error.required">Email is required.</span>
+                        <span ng-if="RegisterForm.email.$error.email">Invalid email format.</span>
+                    </span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control mb-2" name="password" ng-model="user.password" required
+                        ng-minlength="6">
+                    <span class="text-danger" ng-show="RegisterForm.password.$touched && RegisterForm.password.$invalid">
+                        <span ng-if="RegisterForm.password.$error.required">Password is required.</span>
+                        <span ng-if="RegisterForm.password.$error.minlength">Min 6 characters.</span>
+                    </span>
+                </div>
+
+                <button type="submit" ng-disabled="RegisterForm.$invalid" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold">Register</button>
+                <p class="text-center mt-3">
+                    Already have an account?
+                    <a href="#!/login">Login</a>
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,47 @@
+<style>
+    .login-bg {
+        background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    }
+</style>
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light login-bg">
+
+    <div class="row w-75 bg-white rounded-4 shadow overflow-hidden">
+        <div class="col-md-6 d-flex align-items-center justify-content-center p-5">
+            <img src="assets/img/login.jpg" class="img-fluid" style="max-height:350px;">
+        </div>
+
+        <div class="col-md-6 p-5">
+            <h2 class="fw-bold mb-4 text-center">LOGIN</h2>
+            <form name="loginForm" ng-submit="login()">
+                <div class="mb-2">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" ng-model="email" required>
+                    <span class="text-danger"
+                        ng-show="loginForm.email.$touched && loginForm.email.$invalid">
+                        <span ng-if="loginForm.email.$error.required">Email is required.</span>
+                    </span>
+
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Password</label>
+                    <input type="text" class="form-control" name="password" ng-model="password" required>
+                    <span class="text-danger"
+                        ng-show="loginForm.password.$touched && loginForm.password.$invalid">
+                        <span ng-if="loginForm.password.$error.required">Password is required.</span>
+                    </span>
+
+                </div>
+                <button ng-disabled="loginForm.$invalid" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold">Login</button>
+                <p class="text-center mt-3">
+                    Don't have an account?
+                    <a href="#!/register">Register</a>
+                </p>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

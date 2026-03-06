@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <script src="app.js"></script>
+    <script src="services/categoryService.js"></script>
+    <script src="services/medicineService.js"></script>
+    <script src="services/authService.js"></script>
+    <script src="services/alertService.js"></script>
+    <script src="controllers/HomeCtrl.js"></script>
+    <script src="controllers/DashCtrl.js"></script>
+    <script src="controllers/AlertCtrl.js"></script>
+    <script src="controllers/RegisterCtrl.js"></script>
+    <script src="controllers/LoginCtrl.js"></script>
+
+    <body class="bg-light">
+        <div>
+            <div ng-view></div>
+        </div>
+    </body>
+    </html>

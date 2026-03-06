@@ -1,0 +1,95 @@
+<section class="container my-5">
+
+    <h2 class="fw-bold mb-5" style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: #412845">
+        Alerts & Suggestions
+    </h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{active: activeTab=='expiring'}" ng-click="activeTab='expiring'">
+                        Expiring Items
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{active: activeTab=='reorder'}" ng-click="activeTab='reorder'">
+                        Reorder Suggestions
+                    </a>
+                </li>
+
+            </ul>
+
+            <div ng-show="activeTab=='expiring'">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Brand Name</th>
+                                <th>Batch Number</th>
+                                <th>Quantity</th>
+                                <th>Expiry Date</th>
+                                <th>Days Remaining</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in expiringItems">
+                                <td>{{item.brand}}</td>
+                                <td>{{item.batch}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td class="text-warning fw-semibold"> {{item.expiry}} </td>
+                                <td class="text-warning">{{item.days}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div ng-show="activeTab=='reorder'">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Drug Name</th>
+                                <th>Suggested Quantity</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <tr ng-repeat="item in reorderSuggestions">
+                                <td>{{item.brand_name}}</td>
+                                <td>{{item.suggested_qty}}</td>
+                                <td>{{item.reason}}</td>
+                               
+                                <td>
+                                    <span class="badge bg-warning" ng-if="item.status=='pending'">
+                                        Pending
+                                    </span>
+                                    <span class="badge bg-success" ng-if="item.status=='approved'">
+                                        Approved
+                                    </span>
+                                    <span class="badge bg-danger" ng-if="item.status=='rejected'">
+                                        Rejected
+                                    </span>
+                                </td>
+                                <td ng-if="item.status=='pending'">
+                                    <a href="" class="text-success me-2">
+                                        Approve
+                                    </a>
+                                    <a href="" class="text-danger">
+                                        Reject
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
