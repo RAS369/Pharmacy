@@ -1,0 +1,320 @@
+<!-- <!DOCTYPE html>
+<html ng-app="medcoreApp" ng-cloak>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedCore – Checkout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/medcore.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="medcore-config.js"></script>
+</head> -->
+<!-- <body> -->
+<div class="page-wrap" ng-controller="CheckoutCtrl" style="padding-top: 150px;">
+
+
+    <div class="toast-stack">
+        <div class="toast-msg" ng-class="'toast-' + toast.type" ng-repeat="toast in toasts">
+            <i class="fas" ng-class="{
+                'fa-check-circle':       toast.type === 'success',
+                'fa-exclamation-circle': toast.type === 'error',
+                'fa-info-circle':        toast.type === 'info'
+            }"></i>
+            {{toast.message}}
+        </div>
+    </div>
+
+    <div class="container-xl">
+
+
+        <a class="brand-mark" href="#!/cart">
+            <div class="brand-icon"><i class="fas fa-pills"></i></div>
+            <span class="brand-name">MedCore</span>
+        </a>
+
+       
+        <div class="steps-wrap">
+            <div class="step-item done">
+                <div class="step-circle"><i class="fas fa-check" style="font-size:0.8rem"></i></div>
+                <span class="step-lbl">Cart</span>
+            </div>
+            <div class="step-line done"></div>
+            <div class="step-item active">
+                <div class="step-circle">2</div>
+                <span class="step-lbl">Checkout</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <span class="step-lbl">Confirmation</span>
+            </div>
+        </div>
+
+       
+        <div class="spinner-wrap" ng-if="loading">
+            <div class="spinner-border" role="status"></div>
+            <span>Loading your order...</span>
+        </div>
+
+  
+        <div class="text-center py-5" ng-if="!loading && order.items.length === 0">
+            <h4 class="fw-bold mb-2">No order found</h4>
+            <p class="text-muted mb-4">Please go back to the cart and try again.</p>
+            <a href="#!/cart" class="btn btn-primary px-4">
+                <i class="fas fa-arrow-left me-2"></i> Back to Cart
+            </a>
+        </div>
+
+       
+        <div class="row g-4" ng-if="!loading && order.items.length > 0">
+
+         
+            <div class="col-lg-8">
+
+               
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-map-marker-alt"></i> Delivery Information
+                    </div>
+                    <div class="card-body">
+                        <div class="section-title">Personal Details</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name *</label>
+                                <input type="text" class="form-control"
+                                       ng-model="form.firstName"
+                                       ng-class="{'is-invalid': submitted && !form.firstName}"
+                                       placeholder="John">
+                                <div class="invalid-feedback" ng-if="submitted && !form.firstName">First name is required</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name *</label>
+                                <input type="text" class="form-control"
+                                       ng-model="form.lastName"
+                                       ng-class="{'is-invalid': submitted && !form.lastName}"
+                                       placeholder="Doe">
+                                <div class="invalid-feedback" ng-if="submitted && !form.lastName">Last name is required</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-control"
+                                       ng-model="form.phone"
+                                       ng-class="{'is-invalid': submitted && !form.phone}"
+                                       placeholder="+1 (555) 000-0000">
+                                <div class="invalid-feedback" ng-if="submitted && !form.phone">Phone number is required</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-control"
+                                       ng-model="form.email"
+                                       ng-class="{'is-invalid': submitted && !form.email}"
+                                       placeholder="john@example.com">
+                                <div class="invalid-feedback" ng-if="submitted && !form.email">Email is required</div>
+                            </div>
+                        </div>
+
+                        <div class="section-title mt-4">Delivery Address</div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Street Address *</label>
+                                <input type="text" class="form-control"
+                                       ng-model="form.address"
+                                       ng-class="{'is-invalid': submitted && !form.address}"
+                                       placeholder="123 Main Street, Apt 4B">
+                                <div class="invalid-feedback" ng-if="submitted && !form.address">Address is required</div>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">City *</label>
+                                <input type="text" class="form-control"
+                                       ng-model="form.city"
+                                       ng-class="{'is-invalid': submitted && !form.city}"
+                                       placeholder="New York">
+                                <div class="invalid-feedback" ng-if="submitted && !form.city">City is required</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">State / Region</label>
+                                <input type="text" class="form-control" ng-model="form.state" placeholder="NY">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ZIP Code *</label>
+                                <input type="text" class="form-control"
+                                       ng-model="form.zip"
+                                       ng-class="{'is-invalid': submitted && !form.zip}"
+                                       placeholder="10001">
+                                <div class="invalid-feedback" ng-if="submitted && !form.zip">ZIP is required</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Delivery Notes (optional)</label>
+                                <input type="text" class="form-control" ng-model="form.notes"
+                                       placeholder="e.g. Leave at the door, ring bell twice">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-credit-card"></i> Payment Method
+                    </div>
+                    <div class="card-body">
+
+                        <div class="pay-methods">
+                            <div class="pay-method" ng-class="{'active': form.payMethod==='card'}"   ng-click="form.payMethod='card'">
+                                <span class="pm-icon"><i class="fas fa-credit-card"></i></span>
+                                <span class="pm-label">Credit Card</span>
+                            </div>
+                            <div class="pay-method" ng-class="{'active': form.payMethod==='paypal'}" ng-click="form.payMethod='paypal'">
+                                <span class="pm-icon"><i class="fab fa-paypal"></i></span>
+                                <span class="pm-label">PayPal</span>
+                            </div>
+                            <div class="pay-method" ng-class="{'active': form.payMethod==='apple'}"  ng-click="form.payMethod='apple'">
+                                <span class="pm-icon"><i class="fab fa-apple-pay"></i></span>
+                                <span class="pm-label">Apple Pay</span>
+                            </div>
+                            <div class="pay-method" ng-class="{'active': form.payMethod==='cash'}"   ng-click="form.payMethod='cash'">
+                                <span class="pm-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                <span class="pm-label">Cash on Delivery</span>
+                            </div>
+                        </div>
+
+                       
+                        <div ng-if="form.payMethod === 'card'">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Cardholder Name *</label>
+                                    <input type="text" class="form-control"
+                                           ng-model="form.cardName"
+                                           ng-class="{'is-invalid': submitted && form.payMethod==='card' && !form.cardName}"
+                                           placeholder="John Doe">
+                                    <div class="invalid-feedback" ng-if="submitted && form.payMethod==='card' && !form.cardName">Cardholder name is required</div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Card Number *</label>
+                                    <div class="card-input-wrap">
+                                        <input type="text" class="form-control"
+                                               ng-model="form.cardNumber"
+                                               ng-class="{'is-invalid': submitted && form.payMethod==='card' && !isValidCard()}"
+                                               ng-keyup="formatCardNumber()"
+                                               maxlength="19"
+                                               placeholder="1234 5678 9012 3456">
+                                        <span class="card-brand-icon">
+                                            <i class="fab fa-cc-visa"       ng-if="getCardBrand()==='visa'"></i>
+                                            <i class="fab fa-cc-mastercard" ng-if="getCardBrand()==='mastercard'"></i>
+                                            <i class="fab fa-cc-amex"       ng-if="getCardBrand()==='amex'"></i>
+                                            <i class="fas fa-credit-card"   ng-if="getCardBrand()==='generic'"></i>
+                                        </span>
+                                    </div>
+                                    <div class="invalid-feedback" ng-if="submitted && form.payMethod==='card' && !isValidCard()">Enter a valid 16-digit card number</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry Date *</label>
+                                    <input type="text" class="form-control"
+                                           ng-model="form.cardExpiry"
+                                           ng-class="{'is-invalid': submitted && form.payMethod==='card' && !form.cardExpiry}"
+                                           ng-keyup="formatExpiry()"
+                                           maxlength="5"
+                                           placeholder="MM/YY">
+                                    <div class="invalid-feedback" ng-if="submitted && form.payMethod==='card' && !form.cardExpiry">Expiry is required</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV *</label>
+                                    <input type="password" class="form-control"
+                                           ng-model="form.cardCVV"
+                                           ng-class="{'is-invalid': submitted && form.payMethod==='card' && !form.cardCVV}"
+                                           maxlength="4"
+                                           placeholder="•••">
+                                    <div class="invalid-feedback" ng-if="submitted && form.payMethod==='card' && !form.cardCVV">CVV is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+       
+                        <div ng-if="form.payMethod === 'paypal'" class="text-center py-3">
+                            <i class="fab fa-paypal fa-3x mb-3" style="color:#003087"></i>
+                            <p class="text-muted mb-0" style="font-size:0.9rem">You will be redirected to PayPal to complete payment securely.</p>
+                        </div>
+
+                   
+                        <div ng-if="form.payMethod === 'apple'" class="text-center py-3">
+                            <i class="fab fa-apple fa-3x mb-3" style="color:#1d1d1f"></i>
+                            <p class="text-muted mb-0" style="font-size:0.9rem">Complete your purchase using Apple Pay on a supported device.</p>
+                        </div>
+
+               
+                        <div ng-if="form.payMethod === 'cash'" class="text-center py-3">
+                            <i class="fas fa-money-bill-wave fa-3x mb-3" style="color:var(--green-500)"></i>
+                            <p class="text-muted mb-0" style="font-size:0.9rem">Pay cash when your order arrives. Our agent will collect payment at the door.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <a href="#!/cart" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Cart
+                </a>
+            </div>
+
+        
+            <div class="col-lg-4">
+                <div class="card summary-sticky">
+                    <div class="card-header">
+                        <i class="fas fa-receipt"></i> Order Summary
+                    </div>
+                    <div class="card-body">
+
+                        <div class="mini-item" ng-repeat="item in order.items">
+                            <div class="mini-item-img">{{item.emoji || '💊'}}</div>
+                            <div>
+                                <div class="mini-item-name">{{item.name}}</div>
+                                <div class="mini-item-qty">Qty: {{item.quantity}}</div>
+                            </div>
+                            <div class="mini-item-price">${{(item.quantity * item.unit_price) | number:2}}</div>
+                        </div>
+
+                        <hr style="border-color:var(--border); margin: 14px 0;">
+
+                        <div class="sum-row">
+                            <span class="lbl">Subtotal</span>
+                            <span class="fw-bold">${{order.subtotal | number:2}}</span>
+                        </div>
+                        <div class="sum-row" ng-if="order.discount > 0">
+                            <span class="lbl">Discount ({{order.appliedCode}})</span>
+                            <span class="fw-bold text-danger">-${{order.discount | number:2}}</span>
+                        </div>
+                        <div class="sum-row">
+                            <span class="lbl">Delivery</span>
+                            <span class="fw-bold" style="color:var(--green-600)">Free</span>
+                        </div>
+                        <div class="sum-row total">
+                            <span>Total</span>
+                            <span>${{order.total | number:2}}</span>
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-3 py-3"
+                                ng-click="placeOrder()"
+                                ng-disabled="placingOrder">
+                            <span ng-if="!placingOrder">
+                                <i class="fas fa-lock me-2"></i> Place Order — ${{order.total | number:2}}
+                            </span>
+                            <span ng-if="placingOrder">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Placing Order...
+                            </span>
+                        </button>
+
+                        <p class="text-center text-muted mt-3 mb-0" style="font-size:0.76rem">
+                            <i class="fas fa-shield-alt me-1" style="color:var(--green-500)"></i>
+                            Secured with 256-bit SSL encryption
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- </body>
+</html> -->

@@ -1,77 +1,475 @@
 <style>
-    .hero-btn {
-        border: none;
-        padding: 12px 28px;
-        border-radius: 40px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+        --mint: #DDF4E7;
+        --green: #67C090;
+        --green-dark: #4AAA78;
+        --teal: #26667F;
+        --navy: #124170;
+        --white: #ffffff;
+        --gray-soft: #f7f9fc;
+        --gray-text: #64748b;
+        --dark: #0a1f35;
+        --radius-lg: 24px;
+        --radius-xl: 36px;
+        --shadow-card: 0 4px 24px rgba(38, 102, 127, 0.08);
+        --shadow-hover: 0 12px 40px rgba(38, 102, 127, 0.22);
+        --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .hero-btn:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        background: #e6a800;
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--gray-soft);
+        color: var(--dark);
+    }
+
+    /* ── HERO ─────────────────────────────────────── */
+    /* ── HERO WRAPPER ───────────────────────── */
+
+    .hero-wrap {
+    padding: 0 10px;
+    position: relative;
+    margin-top: -100px;  /* pulls hero up behind navbar */
+}
+
+    /* ── HERO SECTION ───────────────────────── */
+
+    .hero-section {
+        position: relative;
+        min-height: 85vh;
+        border-radius: var(--radius-xl);
+        margin-top: 5px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        background:
+            linear-gradient(135deg,
+                rgba(18, 65, 112, .95) 0%,
+                rgba(38, 102, 127, .85) 40%,
+                rgba(103, 192, 144, .65) 100%),
+            url("assets/img/herro.jpg") center/cover no-repeat;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle,
+                rgba(221, 244, 231, .45) 0%,
+                transparent 70%);
+        top: -200px;
+        right: -120px;
+        pointer-events: none;
+    }
+
+    /* ── HERO CONTENT ───────────────────────── */
+
+    .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 120px 60px 60px;  
+    max-width: 560px;
+}
+
+    /* ── HERO TITLE ───────────────────────── */
+
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.3rem, 4vw, 3.6rem);
+        font-weight: 800;
+        color: white;
+        line-height: 1.15;
+        margin-bottom: 16px;
+        text-shadow: 0 4px 30px rgba(0, 0, 0, .3);
+    }
+
+    .hero-title span {
+        color: var(--green);
+    }
+
+    /* ── HERO SUBTEXT ───────────────────────── */
+
+    .hero-sub {
+        color: rgba(255, 255, 255, .85);
+        font-size: 1rem;
+        font-weight: 300;
+        line-height: 1.6;
+        margin-bottom: 34px;
+    }
+
+    /* ── HERO BUTTONS ───────────────────────── */
+
+    .hero-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+
+        background: var(--green);
+        color: white;
+        font-weight: 600;
+        padding: 14px 34px;
+        border-radius: 50px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        border: none;
+        transition: var(--transition);
+        box-shadow: 0 8px 28px rgba(103, 192, 144, .45);
+    }
+
+    .btn-hero-primary:hover {
+        background: var(--green-dark);
+        transform: translateY(-3px);
+    }
+
+    .btn-hero-secondary {
+        color: white;
+        border: 1.5px solid rgba(255, 255, 255, .6);
+        background: rgba(255, 255, 255, .15);
+        backdrop-filter: blur(10px);
+        padding: 14px 22px;
+        border-radius: 50px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255, 255, 255, .3);
+    }
+
+    /* ── HERO STATS ───────────────────────── */
+
+    .hero-stats {
+        position: absolute;
+        bottom: 32px;
+        right: 40px;
+        display: flex;
+        gap: 14px;
+    }
+
+    .stat-pill {
+        background: white;
+        padding: 14px 22px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: var(--shadow-card);
+    }
+
+    .stat-pill .num {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--teal);
+    }
+
+    .stat-pill .lbl {
+        font-size: .72rem;
+        color: var(--gray-text);
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    /* ── ANIMATIONS ───────────────────────────────── */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-up {
+        animation: fadeUp 0.6s ease forwards;
+    }
+
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+        animation-delay: 0.4s;
+    }
+
+    /* headers */
+
+    .container h2,
+    .container h1 {
+        font-family: 'Playfair Display', serif !important;
+        font-weight: 700 !important;
+        color: var(--teal) !important;
+        font-size: 2rem !important;
+    }
+
+    /* categories */
+    .cat-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        overflow: hidden;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .cat-circle img {
+        width: 95px;
+        height: 95px;
+        object-fit: contain;
+        transition: var(--transition);
+    }
+
+    .cat-circle:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* medicines cards */
+    .med-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 1.5px solid #f0f4f2;
+        transition: var(--transition);
+        height: 100%;
+    }
+
+    .med-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--green);
+    }
+
+    .med-img-wrap {
+        background: linear-gradient(135deg, var(--mint) 0%, #d0eee0 100%);
+        padding: 28px 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 160px;
+    }
+
+    .med-img-wrap img {
+        height: 110px;
+        width: auto;
+        object-fit: contain;
+        transition: var(--transition);
+    }
+
+    .med-card:hover .med-img-wrap img {
+        transform: scale(1.08);
+    }
+
+    .med-body {
+        padding: 16px 18px 18px;
+    }
+
+    .med-category {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--green);
+        margin-bottom: 4px;
+    }
+
+    .med-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--dark);
+        margin-bottom: 16px;
+        line-height: 1.35;
+    }
+
+    .med-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .med-price {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--teal);
+    }
+
+    .btn-add {
+        background: var(--mint);
+        color: var(--teal);
+        border: none;
+        border-radius: 50px;
+        padding: 8px 16px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: var(--transition);
+    }
+
+    .btn-add:hover {
+        background: var(--green);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    /* featured */
+    .feat-banner-btn {
+        flex-shrink: 0;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-block;
     }
 </style>
 
-<div style="padding: 16px;">
-    <section style="border-radius: 20px; overflow: hidden; width: 100%;">
-        <div class="position-relative text-white"
-            style="background: url('assets/img/banner.jpg') center/cover no-repeat; min-height: 60vh; border-radius: 20px;">
-            <div style="position:absolute; border-radius:20px;"></div>
-            <div class="position-relative p-5 d-flex flex-column justify-content-end h-100" style="min-height: 60vh;">
-                <div>
-                    <a href="#!/medicines" class=" hero-btn btn btn-warning rounded-pill px-4 py-2">Browse Medicines</a>
-                </div>
+<div class="hero-wrap fade-up">
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Your Health,<br><span>Delivered.</span>
+            </h1>
+            <p class="hero-sub">
+                Premium medications and wellness products, sourced from certified suppliers and delivered to your door.
+            </p>
+            <div class="hero-actions">
+                <a href="#!/shop" class="btn-hero-primary">
+                    <i class="bi bi-bag2"></i> Browse Medicines
+                </a>
+                <a href="#!/contactus" class="btn-hero-secondary">
+                    <i class="bi bi-telephone"></i> Talk to a Pharmacist
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-pill">
+                <span class="num">5k+</span>
+                <span class="lbl">Products</span>
+            </div>
+            <div class="stat-pill">
+                <span class="num">98%</span>
+                <span class="lbl">Satisfaction</span>
+            </div>
+            <div class="stat-pill">
+                <span class="num">24/7</span>
+                <span class="lbl">Support</span>
             </div>
         </div>
     </section>
 </div>
 
 <section class="container my-5">
-    <h2 class="text-center fw-bold mb-5" style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: #412845">Popular
-        Categories</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-2 text-center" ng-repeat="category in categories">
-            <div class="category-circle mb-3">
-                <img ng-src="{{category.icon}}" class="img-fluid">
-            </div>
-            <p>{{category.name}}</p>
+    <h2 class="fw-bold text-center mb-5">Popular Categories</h2>
+    <div class="row justify-content-center g-4 px-3">
+
+        <div class="col-6 col-md-2 text-center px-4">
+            <a href="#!/shop" style="text-decoration:none; color:inherit;">
+                <div class="cat-circle mb-3" style="background:#fff9e6;">
+                    <img src="assets/img/med.png" class="img-fluid">
+                </div>
+                <p class="cat-label">Medicine</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-2 text-center px-4">
+            <a href="#!/shop" style="text-decoration:none; color:inherit;">
+                <div class="cat-circle mb-3" style="background:#fdf0eb;">
+                    <img src="assets/img/hc.webp" class="img-fluid">
+                </div>
+                <p class="cat-label">Health Care</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-2 text-center px-4">
+            <a href="#!/shop" style="text-decoration:none; color:inherit;">
+                <div class="cat-circle mb-3" style="background:#f0f4f8;">
+                    <img src="assets/img/hair.png" class="img-fluid">
+                </div>
+                <p class="cat-label">Hair Care</p>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-2 text-center px-4">
+            <a href="#!/shop" style="text-decoration:none; color:inherit;">
+                <div class="cat-circle mb-3" style="background:#f5f0f8;">
+                    <img src="assets/img/vitaa.png" class="img-fluid">
+                </div>
+                <p class="cat-label">Vitamins & Supplements</p>
+            </a>
         </div>
     </div>
 </section>
 
 <section class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: #412845">Today's Best Deals
-            For You!</h2>
-        <a href="#!/medicines" class="btn btn-outline-secondary rounded-pill px-4">
+        <h2 class="fw-bold">Today's Best Deals For You!</h2>
+        <a href="#!/shop" class="btn btn-outline-secondary rounded-pill px-4">
             See all products
         </a>
     </div>
-    <div class="row">
-
-        <div class="col-md-3 mb-4" ng-repeat="medicine in medicines">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="p-4 text-center bg-light rounded position-relative">
-                    <img ng-src="{{medicine.image_url}}" class="img-fluid" style="height:120px;">
+    <div class="row g-3">
+        <div class="col-6 col-md-3" ng-repeat="medicine in medicines">
+            <div class="med-card">
+                <div class="med-img-wrap">
+                    <img ng-src="{{medicine.image_url}}" alt="{{medicine.brand_name}}">
                 </div>
-                <div class="card-body">
-                    <h6 class="fw-bold">
-                        {{medicine.brand_name}}
-                    </h6>
-                    <small class="text-muted">
-                        {{medicine.category}}
-                    </small>
-
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="fw-bold">
-                            ${{medicine.price}}
-                        </span>
-                        <button class="btn btn-outline-dark btn-sm rounded-pill px-3">
-                            Add to cart
+                <div class="med-body">
+                    <div class="med-category">{{medicine.category}}</div>
+                    <div class="med-name">{{medicine.brand_name}}</div>
+                    <div class="med-footer">
+                        <span class="med-price">${{medicine.price}}</span>
+                    </div>
+                    <p class="text-xs font-semibold mt-2" ng-class="{
+                        'text-red-500': medicine.stock_quantity == 0,
+                        'text-orange-500': medicine.stock_quantity > 0 && medicine.stock_quantity <= 3,
+                        'text-gray-400': medicine.stock_quantity > 3
+                    }">
+                        {{medicine.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + medicine.stock_quantity)}}
+                    </p>
+                    <div class="med-footer">
+                        <button class="btn-add" ng-if="!medicine.quantity" ng-click="addToCart(medicine)">
+                            <i class="bi bi-plus-lg"></i> Add to cart
                         </button>
-
+                        <div ng-if="medicine.quantity" class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" ng-click="removeFromCart(medicine)">-</button>
+                            <span class="fw-bold">{{medicine.quantity}}</span>
+                            <button class="btn btn-sm btn-outline-success" ng-click="addToCart(medicine)">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,17 +481,20 @@
 <section class="container my-5">
     <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-warning-subtle h-100" style="min-height:110px;">
+            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-warning-subtle h-100"
+                style="min-height:110px;">
                 <h5>Get 30% OFF</h5>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-info-subtle h-100" style="min-height:110px;">
+            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-info-subtle h-100"
+                style="min-height:110px;">
                 <h5>Free home delivery</h5>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-success-subtle h-100" style="min-height:110px;">
+            <div class="p-4 rounded-4 fw-semibold d-flex align-items-end bg-success-subtle h-100"
+                style="min-height:110px;">
                 <h5>Doctor's Appointment</h5>
             </div>
         </div>
@@ -104,7 +505,7 @@
         <div class="col-md-6">
             <div class="product-banner">
                 <div class="rounded-4 p-4 text-white d-flex justify-content-between align-items-center shadow"
-                    style="background:#412845; min-height:220px;">
+                    style="background: var(--dark);; min-height:220px;">
                     <div>
                         <img src="assets/img/vit.png" class="img-fluid" style="height:160px; object-fit:contain;">
                     </div>
@@ -112,8 +513,9 @@
                         <h4>Sundown naturals<br>Vitamin-D3</h4>
                         <p>100% authentic product for any D3 solutions.</p>
                     </div>
-                    <button class="btn btn-light rounded-pill px-4 py-2 bg-warning-subtle"> Shop Now
-                    </button>
+                    <a href="#!/shop" class="feat-banner-btn text-dark bg-info-subtle">
+                        Shop Now
+                    </a>
 
                 </div>
 
@@ -123,17 +525,19 @@
         <div class="col-md-6">
             <div class="doctor-banner">
                 <div class="rounded-4 p-4 d-flex justify-content-between align-items-center shadow"
-                    style="background:#dcd0e8; min-height:220px;">
+                    style="background:var(--teal); min-height:220px;">
                     <div>
                         <img src="assets/img/dr.png" class="img-fluid" style="height:160px; object-fit:contain;">
 
                     </div>
                     <div>
-                        <h4>Operational Optimization</h4>
-                        <p>Upload only jpg/png or pdf files size is 15 mb</p>
+                        <h4 class="text-white">Operational Optimization</h4>
+                        <p class="text-white">Upload only jpg/png or pdf files size is 15 mb</p>
                     </div>
 
-                    <button class="btn btn-light rounded-pill px-4">Book appointment</button>
+                    <a href="#!/contactus" class="feat-banner-btn text-dark" style="background:var(--gray-soft);">
+                        Book Now
+                    </a>
                 </div>
             </div>
         </div>
@@ -143,34 +547,43 @@
 </section>
 
 <section class="container my-5">
-    
-    <h2 class="fw-bold" style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: #412845">Best Sellers</h2>
-    <div class="row">
-        <div class="col-md-3 mb-4" ng-repeat="medicine in trendingMedicines">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="p-4 text-center bg-light rounded position-relative">
-                    <img ng-src="{{medicine.image_url}}" class="img-fluid" style="height:120px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Best Sellers</h2>
+        <a href="#!/shop" class="see-all-link">
+            See More <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="row g-3">
+        <div class="col-6 col-md-3" ng-repeat="medicine in trendingMedicines">
+            <div class="med-card">
+                <div class="med-img-wrap">
+                    <img ng-src="{{medicine.image_url}}" alt="{{medicine.brand_name}}">
                 </div>
-                <div class="card-body">
-                    <h6 class="fw-bold">
-                        {{medicine.brand_name}}
-                    </h6>
-                    <small class="text-muted">
-                        {{medicine.category}}
-                    </small>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="fw-bold">
-                            ${{medicine.price}}
-                        </span>
-                        <button class="btn btn-outline-dark btn-sm rounded-pill px-3">
-                            Add to cart
+                <div class="med-body">
+                    <div class="med-category">{{medicine.category}}</div>
+                    <div class="med-name">{{medicine.brand_name}}</div>
+                    <div class="med-footer">
+                        <span class="med-price">${{medicine.price}}</span>
+                    </div>
+                    <p class="text-xs font-semibold mt-2" ng-class="{
+                        'text-red-500': medicine.stock_quantity == 0,
+                        'text-orange-500': medicine.stock_quantity > 0 && medicine.stock_quantity <= 3,
+                        'text-gray-400': medicine.stock_quantity > 3
+                    }">
+                        {{medicine.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + medicine.stock_quantity)}}
+                    </p>
+                    <div class="med-footer">
+                        <button class="btn-add" ng-if="!medicine.quantity" ng-click="addToCart(medicine)">
+                            <i class="bi bi-plus-lg"></i> Add to cart
                         </button>
+                        <div ng-if="medicine.quantity" class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" ng-click="removeFromCart(medicine)">-</button>
+                            <span class="fw-bold">{{medicine.quantity}}</span>
+                            <button class="btn btn-sm btn-outline-success" ng-click="addToCart(medicine)">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <a href="#!/medicines" class="btn btn-outline-secondary rounded-pill px-4" style="color: #412845;">
-            See more!
-        </a>
     </div>
 </section>

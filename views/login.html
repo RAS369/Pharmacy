@@ -1,47 +1,130 @@
 <style>
     .login-bg {
-        background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--teal) 0%, var(--navy) 60%, var(--green-dark) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -120px;        
+        padding-top: 130px;  
+       
+    }
+
+    .login-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 860px;
+    }
+
+    .login-img-side {
+        background: var(--mint);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .login-form-side {
+        padding: 48px 40px;
+    }
+
+    .login-form-side h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--teal);
+        font-weight: 800;
+        margin-bottom: 28px;
+        text-align: center;
+    }
+
+    .login-form-side .form-control {
+        border-radius: 12px;
+        border: 1.5px solid #e0ece7;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .login-form-side .form-control:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(103,192,144,0.2);
+    }
+
+    .login-form-side .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--teal);
+        margin-bottom: 6px;
+    }
+
+    .btn-login {
+        background: var(--green);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        width: 100%;
+        transition: var(--transition);
+        margin-top: 8px;
+    }
+
+    .btn-login:hover {
+        background: var(--green-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(103,192,144,0.4);
+    }
+
+    .btn-login:disabled {
+        background: #ccc;
+        transform: none;
+        box-shadow: none;
     }
 </style>
 
-<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light login-bg">
-
-    <div class="row w-75 bg-white rounded-4 shadow overflow-hidden">
-        <div class="col-md-6 d-flex align-items-center justify-content-center p-5">
+<div class="login-bg">
+    <div class="login-card d-flex flex-column flex-md-row">
+        <div class="login-img-side col-md-6">
             <img src="assets/img/login.jpg" class="img-fluid" style="max-height:350px;">
         </div>
-
-        <div class="col-md-6 p-5">
-            <h2 class="fw-bold mb-4 text-center">LOGIN</h2>
+        <div class="login-form-side col-md-6">
+            <h2>Welcome Back</h2>
             <form name="loginForm" ng-submit="login()">
-                <div class="mb-2">
+
+                <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" ng-model="email" required>
-                    <span class="text-danger"
+                    <input type="email" class="form-control" name="email"
+                        ng-model="email" required placeholder="you@example.com">
+                    <span class="text-danger small"
                         ng-show="loginForm.email.$touched && loginForm.email.$invalid">
-                        <span ng-if="loginForm.email.$error.required">Email is required.</span>
+                        Email is required.
                     </span>
-
                 </div>
 
-                <div class="mb-2">
+                <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <input type="text" class="form-control" name="password" ng-model="password" required>
-                    <span class="text-danger"
+                    <input type="password" class="form-control" name="password"
+                        ng-model="password" required placeholder="••••••••">
+                    <span class="text-danger small"
                         ng-show="loginForm.password.$touched && loginForm.password.$invalid">
-                        <span ng-if="loginForm.password.$error.required">Password is required.</span>
+                        Password is required.
                     </span>
-
                 </div>
-                <button ng-disabled="loginForm.$invalid" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold">Login</button>
-                <p class="text-center mt-3">
-                    Don't have an account?
-                    <a href="#!/register">Register</a>
-                </p>
-            </form>
 
+                <button ng-disabled="loginForm.$invalid" class="btn-login">
+                    Login
+                </button>
+
+                <p class="text-center mt-3" style="font-size:0.88rem; color:var(--gray-text);">
+                    Don't have an account?
+                    <a href="#!/register" style="color:var(--teal); font-weight:600;">Register</a>
+                </p>
+
+            </form>
         </div>
 
     </div>
-
 </div>

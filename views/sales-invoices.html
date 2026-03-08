@@ -1,0 +1,98 @@
+<div class="admin-feature" ng-controller="SalesInvoicesController">
+    <h2 class="page-title">Sales Invoices</h2>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Total Invoices</div>
+            <div class="stat-accent stat-accent-navy"></div>
+            <div class="stat-value">{{ stats.total }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-accent stat-accent-teal"></div>
+            <div class="stat-value">{{ stats.revenue | currency:'EGP ' }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Paid</div>
+            <div class="stat-accent stat-accent-paid"></div>
+            <div class="stat-value">{{ stats.paid }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending / Refunded</div>
+            <div class="stat-accent stat-accent-pending"></div>
+            <div class="stat-value">{{ stats.pending }}</div>
+        </div>
+    </div>
+
+    <div class="filters-bar">
+        <input type="text" placeholder="Search by invoice ID or customer..."
+            ng-model="filters.search" ng-change="applyFilters()" />
+        <input type="date" ng-model="filters.startDate" ng-change="applyFilters()" />
+        <input type="date" ng-model="filters.endDate" ng-change="applyFilters()" />
+        <select ng-model="filters.status" ng-change="applyFilters()">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="paid">Paid</option>
+        </select>
+        <button class="btn-reset" ng-click="resetFilters()">Reset</button>
+    </div>
+
+    <p class="error-msg" ng-if="errorMessage">{{ errorMessage }}</p>
+
+    <div class="table-card">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Subtotal</th>
+                    <th>Discount</th>
+                    <th>Total (EGP)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="loading-row" ng-if="loading">
+                    <td colspan="9">Loading invoices...</td>
+                </tr>
+                <tr ng-if="!loading && invoices.length === 0">
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <p>No invoices found.</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-repeat="inv in invoices" ng-if="!loading">
+                    <td><strong>#{{ inv.id }}</strong></td>
+                    <td>{{ inv.customer_name }}</td>
+                    <td>{{ inv.date | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ inv.items_count }}</td>
+                    <td>{{ inv.subtotal | currency:'EGP ' }}</td>
+                    <td>{{ inv.discount | currency:'EGP ' }}</td>
+                    <td><strong>{{ inv.total | currency:'EGP ' }}</strong></td>
+                    <td>
+                        <span class="badge" ng-class="{
+                            'badge-paid': inv.status === 'paid' || inv.status === 'delivered',
+                            'badge-pending': inv.status === 'pending',
+                            'badge-refunded': inv.status === 'cancelled'
+                        }">{{ inv.status }}</span>
+                    </td>
+                    <td>
+                        <select class="status-select" ng-model="inv.status" ng-change="updateStatus(inv, inv.status)">
+                            <option value="pending">Pending</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                        <button class="btn-icon" ng-click="deleteInvoice(inv.id)" title="Delete">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

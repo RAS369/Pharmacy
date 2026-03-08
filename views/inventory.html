@@ -1,0 +1,82 @@
+<style>
+.inventory-wrap { padding: 24px; background: #f4f6fb; min-height: calc(100vh - 70px); }
+.inventory-title { margin-bottom: 18px; color: #124170; font-weight: 700; }
+.inventory-top { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
+.inventory-top input { max-width: 320px; }
+.inv-add-btn { margin-left: auto; background: #27ae60; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; }
+.inventory-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+.inventory-table th { background: #f1f3f7; padding: 12px; font-size: 12px; text-transform: uppercase; }
+.inventory-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+.inventory-table tbody tr:last-child td { border-bottom: none; }
+.inv-link-view { color: #2d9cdb; cursor: pointer; }
+.inv-link-edit { color: #f2c94c; cursor: pointer; }
+.inv-link-delete { color: #eb5757; cursor: pointer; }
+.inv-modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.inv-modal-content { width: 360px; max-width: 92vw; background: #fff; border-radius: 10px; padding: 20px; }
+.inv-modal-content input { width: 100%; margin: 6px 0; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; }
+.inv-modal-actions { margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end; }
+</style>
+
+<div class="inventory-wrap" ng-controller="InventoryCtrl">
+    <h2 class="inventory-title">Inventory</h2>
+
+    <div class="inventory-top">
+        <input type="text" class="form-control" placeholder="Search..." ng-model="searchText" />
+        <button class="inv-add-btn" ng-click="addDrug()">Add New Drug</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Brand</th>
+                    <th>Generic</th>
+                    <th>Dosage</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="medicine in medicines | filter:searchText">
+                    <td>{{medicine.brand_name}}</td>
+                    <td>{{medicine.generic_name}}</td>
+                    <td>{{medicine.dosage}}</td>
+                    <td>{{medicine.category}}</td>
+                    <td>{{medicine.stock_quantity}}</td>
+                    <td>{{medicine.price}}</td>
+                    <td>
+                        <span class="inv-link-view" ng-click="view(medicine)">View</span> |
+                        <span class="inv-link-edit" ng-click="edit(medicine)">Edit</span> |
+                        <span class="inv-link-delete" ng-click="deleteDrug(medicine.id)">Delete</span>
+                    </td>
+                </tr>
+                <tr ng-if="medicines.length === 0">
+                    <td colspan="7" class="text-muted text-center">No medicines found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="inv-modal" ng-if="showModal">
+        <div class="inv-modal-content">
+            <h5>{{ newDrug.id ? 'Edit Drug' : 'Add Drug' }}</h5>
+            <input type="text" placeholder="Name" ng-model="newDrug.name" />
+            <input type="text" placeholder="Brand Name" ng-model="newDrug.brand_name" />
+            <input type="text" placeholder="Generic Name" ng-model="newDrug.generic_name" />
+            <input type="text" placeholder="Batch Number" ng-model="newDrug.batch_number" />
+            <input type="text" placeholder="Dosage" ng-model="newDrug.dosage" />
+            <input type="text" placeholder="Category" ng-model="newDrug.category" />
+            <input type="number" placeholder="Stock Quantity" ng-model="newDrug.stock_quantity" />
+            <input type="number" placeholder="Price" ng-model="newDrug.price" />
+            <input type="date" ng-model="newDrug.expiry_date" />
+            <input type="text" placeholder="Image URL" ng-model="newDrug.image_url" />
+
+            <div class="inv-modal-actions">
+                <button class="btn btn-success btn-sm" ng-click="saveDrug()">Save</button>
+                <button class="btn btn-outline-secondary btn-sm" ng-click="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+<!-- ============================================================
+     MEDCORE ADMIN - Users View
+     Partial template injected into ng-view
+     Controller: UsersController
+     ============================================================ -->
+
+<div ng-controller="UsersController">
+
+  <h2 class="page-title">Users</h2>
+
+  <!-- ── Search ───────────────────────────────────────────── -->
+  <div class="filters-bar">
+    <input
+      type="text"
+      placeholder="Search by name or email…"
+      ng-model="searchQuery"
+      ng-change="onSearch()"
+      style="max-width: 360px;"
+    />
+  </div>
+
+  <!-- ── Error ─────────────────────────────────────────────── -->
+  <p style="color: var(--danger); margin-bottom: 12px;" ng-if="errorMessage">{{ errorMessage }}</p>
+
+  <!-- ── Table ─────────────────────────────────────────────── -->
+  <div class="table-card">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Loading -->
+        <tr class="loading-row" ng-if="loading">
+          <td colspan="6">Loading users…</td>
+        </tr>
+
+        <!-- Empty -->
+        <tr ng-if="!loading && users.length === 0">
+          <td colspan="6">
+            <div class="empty-state">
+              <div class="empty-icon">👥</div>
+              <p>No users found.</p>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Rows -->
+        <tr ng-repeat="user in users" ng-if="!loading">
+          <td style="color: var(--muted); font-size: 12px;">#{{ user.id }}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="customer-avatar"
+                   style="width:32px; height:32px; font-size:13px; flex-shrink:0;">
+                {{ (user.name || '?').charAt(0).toUpperCase() }}
+              </div>
+              {{ user.name }}
+            </div>
+          </td>
+          <td style="color: var(--muted);">{{ user.email }}</td>
+          <td>{{ user.phone || '—' }}</td>
+          <td style="color: var(--muted);">{{ user.created_at | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="btn-icon" ng-click="startEdit(user)" title="Edit">✏️</button>
+            <button class="btn-icon" ng-click="deleteUser(user.id)" title="Delete">🗑️</button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Edit Modal ────────────────────────────────────────── -->
+  <div class="modal-overlay" ng-if="editingUser">
+    <div class="modal-box">
+
+      <h3>✏️ Edit User</h3>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" ng-model="editingUser.name" placeholder="Full name" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" ng-model="editingUser.email" placeholder="Email address" />
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" ng-model="editingUser.phone" placeholder="Phone number" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-reset" ng-click="cancelEdit()">Cancel</button>
+        <button class="btn-primary" ng-click="saveUser()">Save Changes</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

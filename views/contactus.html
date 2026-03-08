@@ -1,0 +1,121 @@
+﻿<style>
+.contactus-page {
+  font-family: 'Lexend', sans-serif;
+  background: #f4f6fb;
+  padding: 30px;
+}
+
+.contactus-page .section-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin-top: 40px;
+}
+
+.contactus-page .section-desc {
+  color: #64748b;
+  max-width: 600px;
+  margin-top: 15px;
+}
+
+.contactus-page .contact-card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.contactus-page .contact-icon {
+  background: #e6f3ef;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 24px;
+  color: #145e4b;
+}
+
+.contactus-page .contact-title { font-weight: 600; font-size: 18px; }
+.contactus-page .contact-highlight { font-size: 20px; color: #145e4b; font-weight: 700; }
+
+.contactus-page .message-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-top: 30px;
+}
+
+.contactus-page .form-control { border-radius: 12px; padding: 14px; }
+
+.contactus-page .send-btn {
+  background: #145e4b;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.contactus-page .send-btn:hover { background: #0f4a3b; }
+
+</style>
+
+<div class="contactus-page">
+  <div class="container">
+    <h1 class="section-title">Get in Touch</h1>
+    <p class="section-desc">Have a question or need assistance? Our team of pharmacists and healthcare experts are here to help you.</p>
+
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="contact-card">
+          <div class="contact-icon"><i class="bi bi-telephone"></i></div>
+          <div>
+            <div class="contact-title">Call Us</div>
+            <div class="contact-highlight">19000</div>
+            <small>Available 24/7 for emergencies</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="contact-card">
+          <div class="contact-icon"><i class="bi bi-envelope"></i></div>
+          <div>
+            <div class="contact-title">Email</div>
+            <div class="contact-highlight">care@medcore.com</div>
+            <small>Response within 24 hours</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="contact-card">
+          <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
+          <div>
+            <div class="contact-title">Visit Us</div>
+            <div class="contact-highlight">Cairo, Egypt</div>
+            <small>123 Health Avenue</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-card col-md-7">
+      <h4>Send us a Message</h4>
+      <div class="mt-4">
+        <input type="text" class="form-control mb-3" placeholder="Full Name">
+        <input type="email" class="form-control mb-3" placeholder="Email Address">
+        <textarea class="form-control mb-3" rows="5" placeholder="How can we help you?"></textarea>
+        <button class="send-btn w-100">Send Message <i class="bi bi-send"></i></button>
+      </div>
+    </div>
+  </div>
+
+</div>

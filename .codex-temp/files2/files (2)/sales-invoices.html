@@ -1,0 +1,131 @@
+<!-- ============================================================
+     MEDCORE ADMIN - Sales Invoices View
+     Partial template injected into ng-view
+     Controller: SalesInvoicesController
+     ============================================================ -->
+
+<div ng-controller="SalesInvoicesController">
+
+  <h2 class="page-title">Sales Invoices</h2>
+
+  <!-- ── Stats ─────────────────────────────────────────────── -->
+  <div class="stats-row">
+
+    <div class="stat-card">
+      <div class="stat-label">Total Invoices</div>
+      <div class="stat-accent" style="background: var(--navy);"></div>
+      <div class="stat-value">{{ stats.total }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-accent" style="background: var(--teal);"></div>
+      <div class="stat-value">{{ stats.revenue | currency:'EGP ' }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Paid</div>
+      <div class="stat-accent" style="background: #2e7d32;"></div>
+      <div class="stat-value">{{ stats.paid }}</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Pending / Refunded</div>
+      <div class="stat-accent" style="background: var(--orange);"></div>
+      <div class="stat-value">{{ stats.pending }}</div>
+    </div>
+
+  </div>
+
+  <!-- ── Filters ───────────────────────────────────────────── -->
+  <div class="filters-bar">
+
+    <input
+      type="text"
+      placeholder="Search by invoice ID or customer..."
+      ng-model="filters.search"
+      ng-change="loadInvoices()"
+    />
+
+    <input type="date" ng-model="filters.startDate" ng-change="loadInvoices()" />
+    <input type="date" ng-model="filters.endDate"   ng-change="loadInvoices()" />
+
+    <select ng-model="filters.status" ng-change="loadInvoices()">
+      <option value="all">All Statuses</option>
+      <option value="paid">Paid</option>
+      <option value="pending">Pending</option>
+      <option value="refunded">Refunded</option>
+    </select>
+
+    <button class="btn-reset" ng-click="resetFilters()">✕ Reset</button>
+
+  </div>
+
+  <!-- ── Error ─────────────────────────────────────────────── -->
+  <p style="color: var(--danger); margin-bottom: 12px;" ng-if="errorMessage">{{ errorMessage }}</p>
+
+  <!-- ── Table ─────────────────────────────────────────────── -->
+  <div class="table-card">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Items</th>
+          <th>Subtotal</th>
+          <th>Discount</th>
+          <th>Total (EGP)</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="loading-row" ng-if="loading">
+          <td colspan="9">Loading invoices…</td>
+        </tr>
+
+        <tr ng-if="!loading && invoices.length === 0">
+          <td colspan="9">
+            <div class="empty-state">
+              <div class="empty-icon">🧾</div>
+              <p>No invoices found.</p>
+            </div>
+          </td>
+        </tr>
+
+        <tr ng-repeat="inv in invoices" ng-if="!loading">
+          <td><strong>#{{ inv.id }}</strong></td>
+          <td>{{ inv.customer_name }}</td>
+          <td>{{ inv.date | date:'dd/MM/yyyy' }}</td>
+          <td>{{ inv.items_count }}</td>
+          <td>{{ inv.subtotal  | currency:'EGP ' }}</td>
+          <td>{{ inv.discount  | currency:'EGP ' }}</td>
+          <td><strong>{{ inv.total | currency:'EGP ' }}</strong></td>
+          <td>
+            <span class="badge"
+              ng-class="{
+                'badge-paid'    : inv.status === 'paid',
+                'badge-pending' : inv.status === 'pending',
+                'badge-refunded': inv.status === 'refunded'
+              }">{{ inv.status }}</span>
+          </td>
+          <td>
+            <select
+              ng-model="inv.status"
+              ng-change="updateStatus(inv, inv.status)"
+              style="padding:4px 8px; border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--text); background:var(--white); outline:none; cursor:pointer;">
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="refunded">Refunded</option>
+            </select>
+            <button class="btn-icon" ng-click="deleteInvoice(inv.id)" title="Delete">🗑️</button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>

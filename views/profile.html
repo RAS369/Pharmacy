@@ -1,0 +1,537 @@
+﻿<link rel="stylesheet" href="css/profile.css">
+<div class="page-wrap" ng-controller="ProfileCtrl">
+
+  
+    <div class="toast-stack">
+        <div class="toast-msg" ng-class="'toast-' + toast.type" ng-repeat="toast in toasts">
+            <i class="fas" ng-class="{
+                'fa-check-circle':       toast.type === 'success',
+                'fa-exclamation-circle': toast.type === 'error',
+                'fa-info-circle':        toast.type === 'info'
+            }"></i>
+            {{toast.message}}
+        </div>
+    </div>
+
+    <div class="container-xl">
+
+
+        <a class="brand-mark" href="#!/cart">
+            <div class="brand-icon"><i class="fas fa-pills"></i></div>
+            <span class="brand-name">MedCore</span>
+        </a>
+
+
+        <div class="spinner-wrap" ng-if="loading">
+            <div class="spinner-border" role="status"></div>
+            <span>Loading your profile...</span>
+        </div>
+
+       
+        <div ng-if="!loading">
+
+          
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span>{{getInitials()}}</span>
+                </div>
+                <div class="profile-header-info">
+                    <h3 class="profile-name">{{user.first_name}} {{user.last_name}}</h3>
+                    <p class="profile-email"><i class="fas fa-envelope me-2"></i>{{user.email}}</p>
+                    <div class="profile-badges">
+                        <span class="profile-badge" ng-if="user.is_vip">
+                            <i class="fas fa-crown"></i> VIP Member
+                        </span>
+                        <span class="profile-badge member-since">
+                            <i class="fas fa-calendar-alt"></i> Member since {{user.member_since}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="profile-tabs">
+                <button class="profile-tab" ng-class="{'active': activeTab === 'info'}"    ng-click="setTab('info')">
+                    <i class="fas fa-user me-2"></i> My Info
+                </button>
+                <button class="profile-tab" ng-class="{'active': activeTab === 'orders'}"  ng-click="setTab('orders')">
+                    <i class="fas fa-box me-2"></i> My Orders
+                    <span class="tab-badge" ng-if="orders.length > 0">{{orders.length}}</span>
+                </button>
+                <button class="profile-tab" ng-class="{'active': activeTab === 'address'}" ng-click="setTab('address')">
+                    <i class="fas fa-map-marker-alt me-2"></i> Addresses
+                </button>
+                <button class="profile-tab" ng-class="{'active': activeTab === 'security'}" ng-click="setTab('security')">
+                    <i class="fas fa-shield-alt me-2"></i> Security
+                </button>
+            </div>
+
+ 
+            <div ng-if="activeTab === 'info'">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-user-edit"></i> Personal Information
+                                <button class="btn btn-sm btn-outline-success ms-auto"
+                                        ng-if="!editingInfo"
+                                        ng-click="startEditInfo()">
+                                    <i class="fas fa-pen me-1"></i> Edit
+                                </button>
+                            </div>
+                            <div class="card-body">
+
+
+                                <div ng-if="!editingInfo">
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-user me-1"></i> First Name</span>
+                                            <span class="info-value">{{user.first_name}}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-user me-1"></i> Last Name</span>
+                                            <span class="info-value">{{user.last_name}}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-envelope me-1"></i> Email</span>
+                                            <span class="info-value">{{user.email}}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-phone me-1"></i> Phone</span>
+                                            <span class="info-value">{{user.phone || 'â€”'}}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-birthday-cake me-1"></i> Date of Birth</span>
+                                            <span class="info-value">{{user.dob || 'â€”'}}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label"><i class="fas fa-venus-mars me-1"></i> Gender</span>
+                                            <span class="info-value">{{user.gender || 'â€”'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                   
+                                <div ng-if="editingInfo">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">First Name *</label>
+                                            <input type="text" class="form-control"
+                                                   ng-model="editForm.first_name"
+                                                   ng-class="{'is-invalid': infoSubmitted && !editForm.first_name}"
+                                                   placeholder="John">
+                                            <div class="invalid-feedback" ng-if="infoSubmitted && !editForm.first_name">Required</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Last Name *</label>
+                                            <input type="text" class="form-control"
+                                                   ng-model="editForm.last_name"
+                                                   ng-class="{'is-invalid': infoSubmitted && !editForm.last_name}"
+                                                   placeholder="Doe">
+                                            <div class="invalid-feedback" ng-if="infoSubmitted && !editForm.last_name">Required</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email *</label>
+                                            <input type="email" class="form-control"
+                                                   ng-model="editForm.email"
+                                                   ng-class="{'is-invalid': infoSubmitted && !editForm.email}"
+                                                   placeholder="john@example.com">
+                                            <div class="invalid-feedback" ng-if="infoSubmitted && !editForm.email">Required</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Phone</label>
+                                            <input type="tel" class="form-control" ng-model="editForm.phone" placeholder="+1 (555) 000-0000">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Date of Birth</label>
+                                            <input type="date" class="form-control" ng-model="editForm.dob">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Gender</label>
+                                            <select class="form-select" ng-model="editForm.gender">
+                                                <option value="">Prefer not to say</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-2 mt-4">
+                                        <button class="btn btn-primary px-4" ng-click="saveInfo()" ng-disabled="savingInfo">
+                                            <span ng-if="!savingInfo"><i class="fas fa-save me-2"></i> Save Changes</span>
+                                            <span ng-if="savingInfo"><span class="spinner-border spinner-border-sm me-2"></span> Saving...</span>
+                                        </button>
+                                        <button class="btn btn-outline-secondary px-4" ng-click="cancelEditInfo()">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+         
+                    <div class="col-lg-4">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <i class="fas fa-chart-pie"></i> Account Summary
+                            </div>
+                            <div class="card-body">
+                                <div class="stat-item">
+                                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                                    <div>
+                                        <div class="stat-num">{{orders.length}}</div>
+                                        <div class="stat-lbl">Total Orders</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                                    <div>
+                                        <div class="stat-num">${{getTotalSpent() | number:2}}</div>
+                                        <div class="stat-lbl">Total Spent</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <div class="stat-num">{{getDeliveredCount()}}</div>
+                                        <div class="stat-lbl">Delivered</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item" style="border:none">
+                                    <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+                                    <div>
+                                        <div class="stat-num">{{getPendingCount()}}</div>
+                                        <div class="stat-lbl">Pending</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div ng-if="activeTab === 'orders'">
+
+
+                <div class="spinner-wrap" ng-if="loadingOrders">
+                    <div class="spinner-border" role="status"></div>
+                    <span>Loading your orders...</span>
+                </div>
+
+          
+                <div class="text-center py-5" ng-if="!loadingOrders && orders.length === 0">
+                    <div class="empty-icon-wrap mx-auto mb-3" style="width:80px;height:80px;background:var(--green-50);border-radius:50%;border:2px solid var(--green-100);display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-box-open fa-2x" style="color:var(--green-200)"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">No orders yet</h5>
+                    <p class="text-muted mb-4">Start shopping and your orders will appear here.</p>
+                    <a href="#!/shop" class="btn btn-primary px-4">
+                        <i class="fas fa-pills me-2"></i> Browse Medicines
+                    </a>
+                </div>
+
+       
+                <div ng-if="!loadingOrders && orders.length > 0">
+
+         
+                    <div class="orders-filter-bar mb-3">
+                        <button class="filter-btn" ng-class="{'active': orderFilter==='all'}"       ng-click="orderFilter='all'">All</button>
+                        <button class="filter-btn" ng-class="{'active': orderFilter==='pending'}"   ng-click="orderFilter='pending'">Pending</button>
+                        <button class="filter-btn" ng-class="{'active': orderFilter==='delivered'}" ng-click="orderFilter='delivered'">Delivered</button>
+                        <button class="filter-btn" ng-class="{'active': orderFilter==='cancelled'}" ng-click="orderFilter='cancelled'">Cancelled</button>
+                    </div>
+
+                    <div class="order-card" ng-repeat="order in getFilteredOrders()">
+                        <div class="order-card-header">
+                            <div>
+                                <div class="order-number">Order #{{order.id}}</div>
+                                <div class="order-date"><i class="fas fa-clock me-1"></i>{{order.created_at | date:'MMM d, yyyy Â· h:mm a'}}</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="order-status-badge" ng-class="'status-' + order.status">
+                                    <i class="fas" ng-class="{
+                                        'fa-clock':        order.status==='pending',
+                                        'fa-truck':        order.status==='shipped',
+                                        'fa-check-circle': order.status==='delivered',
+                                        'fa-times-circle': order.status==='cancelled'
+                                    }"></i>
+                                    {{order.status | capitalize}}
+                                </span>
+                                <div class="order-total">${{order.total | number:2}}</div>
+                            </div>
+                        </div>
+
+        
+                        <div class="order-items-preview">
+                            <div class="order-item-chip" ng-repeat="item in parseItems(order.items) | limitTo:3">
+                                {{item.emoji || 'ðŸ’Š'}} {{item.name}} Ã—{{item.quantity}}
+                            </div>
+                            <div class="order-item-chip more" ng-if="parseItems(order.items).length > 3">
+                                +{{parseItems(order.items).length - 3}} more
+                            </div>
+                        </div>
+
+    
+                        <div class="order-card-footer">
+                            <div class="order-delivery">
+                                <i class="fas fa-map-marker-alt me-1" style="color:var(--green-500)"></i>
+                                {{order.city}}, {{order.address}}
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-success"
+                                        ng-click="viewOrder(order)">
+                                    <i class="fas fa-eye me-1"></i> Details
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        ng-if="order.status === 'pending'"
+                                        ng-click="cancelOrder(order)">
+                                    <i class="fas fa-times me-1"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="activeTab === 'address'">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+
+   
+                        <div class="card mb-4" ng-if="addresses.length > 0">
+                            <div class="card-header">
+                                <i class="fas fa-map-marker-alt"></i> Saved Addresses
+                            </div>
+                            <div class="card-body" style="padding:14px !important">
+                                <div class="address-card" ng-repeat="addr in addresses" ng-class="{'default': addr.is_default}">
+                                    <div class="address-card-body">
+                                        <div class="address-tag" ng-if="addr.is_default">
+                                            <i class="fas fa-star"></i> Default
+                                        </div>
+                                        <div class="address-label">{{addr.label || 'Address'}}</div>
+                                        <div class="address-text">{{addr.full_address}}</div>
+                                        <div class="address-text">{{addr.city}}, {{addr.state}} {{addr.zip}}</div>
+                                    </div>
+                                    <div class="address-card-actions">
+                                        <button class="btn btn-sm btn-outline-success" ng-click="setDefaultAddress(addr)" ng-if="!addr.is_default">
+                                            Set Default
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" ng-click="deleteAddress(addr)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-plus-circle"></i> Add New Address
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Label (e.g. Home, Work)</label>
+                                        <input type="text" class="form-control" ng-model="newAddress.label" placeholder="Home">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Street Address *</label>
+                                        <input type="text" class="form-control"
+                                               ng-model="newAddress.full_address"
+                                               ng-class="{'is-invalid': addrSubmitted && !newAddress.full_address}"
+                                               placeholder="123 Main Street, Apt 4B">
+                                        <div class="invalid-feedback" ng-if="addrSubmitted && !newAddress.full_address">Address is required</div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">City *</label>
+                                        <input type="text" class="form-control"
+                                               ng-model="newAddress.city"
+                                               ng-class="{'is-invalid': addrSubmitted && !newAddress.city}"
+                                               placeholder="New York">
+                                        <div class="invalid-feedback" ng-if="addrSubmitted && !newAddress.city">City is required</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">State</label>
+                                        <input type="text" class="form-control" ng-model="newAddress.state" placeholder="NY">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">ZIP *</label>
+                                        <input type="text" class="form-control"
+                                               ng-model="newAddress.zip"
+                                               ng-class="{'is-invalid': addrSubmitted && !newAddress.zip}"
+                                               placeholder="10001">
+                                        <div class="invalid-feedback" ng-if="addrSubmitted && !newAddress.zip">ZIP is required</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ng-model="newAddress.is_default" id="setDefault">
+                                            <label class="form-check-label" for="setDefault" style="font-size:0.88rem">Set as default address</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary mt-4 px-4" ng-click="saveAddress()" ng-disabled="savingAddress">
+                                    <span ng-if="!savingAddress"><i class="fas fa-plus me-2"></i> Add Address</span>
+                                    <span ng-if="savingAddress"><span class="spinner-border spinner-border-sm me-2"></span> Saving...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div ng-if="activeTab === 'security'">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-lock"></i> Change Password
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Current Password *</label>
+                                        <input type="password" class="form-control"
+                                               ng-model="passwordForm.current"
+                                               ng-class="{'is-invalid': pwSubmitted && !passwordForm.current}"
+                                               placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                                        <div class="invalid-feedback" ng-if="pwSubmitted && !passwordForm.current">Current password is required</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">New Password *</label>
+                                        <input type="password" class="form-control"
+                                               ng-model="passwordForm.newPw"
+                                               ng-class="{'is-invalid': pwSubmitted && !passwordForm.newPw}"
+                                               placeholder="Min. 8 characters">
+                                        <div class="invalid-feedback" ng-if="pwSubmitted && !passwordForm.newPw">New password is required</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Confirm New Password *</label>
+                                        <input type="password" class="form-control"
+                                               ng-model="passwordForm.confirm"
+                                               ng-class="{'is-invalid': pwSubmitted && !passwordsMatch()}"
+                                               placeholder="Repeat new password">
+                                        <div class="invalid-feedback" ng-if="pwSubmitted && !passwordsMatch()">Passwords do not match</div>
+                                    </div>
+                                </div>
+
+             
+                                <div class="pw-strength-wrap mt-3" ng-if="passwordForm.newPw">
+                                    <div class="pw-strength-bar">
+                                        <div class="pw-strength-fill" ng-style="{'width': getPasswordStrength().pct + '%', 'background': getPasswordStrength().color}"></div>
+                                    </div>
+                                    <span class="pw-strength-label" ng-style="{'color': getPasswordStrength().color}">
+                                        {{getPasswordStrength().label}}
+                                    </span>
+                                </div>
+
+                                <button class="btn btn-primary mt-4 px-4" ng-click="changePassword()" ng-disabled="changingPassword">
+                                    <span ng-if="!changingPassword"><i class="fas fa-key me-2"></i> Update Password</span>
+                                    <span ng-if="changingPassword"><span class="spinner-border spinner-border-sm me-2"></span> Updating...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+               
+                    <div class="col-lg-8">
+                        <div class="card danger-card">
+                            <div class="card-header" style="border-bottom:1px solid #fde8e8 !important;">
+                                <i class="fas fa-exclamation-triangle" style="color:var(--red)"></i>
+                                <span style="color:var(--red)">Danger Zone</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="fw-bold mb-1" style="font-size:0.9rem">Delete Account</div>
+                                        <div class="text-muted" style="font-size:0.82rem">Permanently delete your account and all data. This cannot be undone.</div>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm px-3" ng-click="confirmDeleteAccount()">
+                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal-overlay" ng-if="selectedOrder" ng-click="closeOrderModal()">
+        <div class="modal-box" ng-click="$event.stopPropagation()">
+            <div class="modal-box-header">
+                <div>
+                    <div class="fw-bold" style="font-family:var(--font-h)">Order #{{selectedOrder.id}}</div>
+                    <div style="font-size:0.78rem; color:#8aaa95;">{{selectedOrder.created_at | date:'MMM d, yyyy Â· h:mm a'}}</div>
+                </div>
+                <button class="modal-close" ng-click="closeOrderModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-box-body">
+
+                <div class="mb-3">
+                    <span class="order-status-badge" ng-class="'status-' + selectedOrder.status">
+                        {{selectedOrder.status | capitalize}}
+                    </span>
+                </div>
+
+              
+                <div class="section-title">Items</div>
+                <div class="mini-item" ng-repeat="item in parseItems(selectedOrder.items)">
+                    <div class="mini-item-img">{{item.emoji || 'ðŸ’Š'}}</div>
+                    <div>
+                        <div class="mini-item-name">{{item.name}}</div>
+                        <div class="mini-item-qty">{{item.category}} Â· Qty: {{item.quantity}}</div>
+                    </div>
+                    <div class="mini-item-price">${{(item.quantity * item.unit_price) | number:2}}</div>
+                </div>
+
+        
+                <div class="order-info-box mt-3">
+                    <div class="order-info-row">
+                        <span class="lbl">Subtotal</span>
+                        <span class="val">${{selectedOrder.subtotal | number:2}}</span>
+                    </div>
+                    <div class="order-info-row" ng-if="selectedOrder.discount > 0">
+                        <span class="lbl">Discount</span>
+                        <span style="font-weight:700;color:var(--red)">-${{selectedOrder.discount | number:2}}</span>
+                    </div>
+                    <div class="order-info-row" style="border:none">
+                        <span style="font-weight:800;font-family:var(--font-h);color:var(--green-700)">Total</span>
+                        <span style="font-weight:800;font-family:var(--font-h);color:var(--green-700)">${{selectedOrder.total | number:2}}</span>
+                    </div>
+                </div>
+
+               
+                <div class="section-title mt-3">Delivery Info</div>
+                <div class="order-info-box">
+                    <div class="order-info-row">
+                        <span class="lbl">Name</span>
+                        <span class="val">{{selectedOrder.first_name}} {{selectedOrder.last_name}}</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="lbl">Phone</span>
+                        <span class="val">{{selectedOrder.phone}}</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="lbl">Address</span>
+                        <span class="val">{{selectedOrder.address}}, {{selectedOrder.city}}</span>
+                    </div>
+                    <div class="order-info-row" style="border:none">
+                        <span class="lbl">Payment</span>
+                        <span class="val">{{getPayMethodLabel(selectedOrder.pay_method)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

@@ -1,0 +1,163 @@
+<div class="page-wrap" ng-controller="CartCtrl" style="padding-top: 150px;">
+
+    <div class="toast-stack">
+        <div class="toast-msg" ng-class="'toast-' + toast.type" ng-repeat="toast in toasts">
+            <i class="fas" ng-class="{
+                'fa-check-circle':       toast.type === 'success',
+                'fa-exclamation-circle': toast.type === 'error',
+                'fa-info-circle':        toast.type === 'info'
+            }"></i>
+            {{toast.message}}
+        </div>
+    </div>
+
+    <div class="container-xl">
+
+        <div class="steps-wrap">
+            <div class="step-item active">
+                <div class="step-circle">1</div>
+                <span class="step-lbl">Cart</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+                <div class="step-circle">2</div>
+                <span class="step-lbl">Checkout</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <span class="step-lbl">Confirmation</span>
+            </div>
+        </div>
+
+        <div class="spinner-wrap" ng-if="loading">
+            <div class="spinner-border" role="status"></div>
+            <span>Loading your cart...</span>
+        </div>
+
+        <div class="text-center py-5" ng-if="!loading && cart.length === 0">
+            <div style="width:90px;height:90px;background:var(--green-50);border-radius:50%;border:2px solid var(--green-100);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                <i class="fas fa-shopping-cart fa-2x" style="color:var(--green-200)"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Your cart is empty</h4>
+            <p class="text-muted mb-4">Browse our medicines and add items to get started</p>
+            <a href="#!/shop" class="btn btn-primary px-4">
+                <i class="fas fa-pills me-2"></i> Browse Medicines
+            </a>
+        </div>
+
+        <div class="row g-4" ng-if="!loading && cart.length > 0">
+
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h4 class="fw-bold mb-0">
+                        <i class="fas fa-shopping-cart me-2" style="color:var(--green-600)"></i>
+                        Shopping Cart
+                    </h4>
+                    <span class="badge bg-success rounded-pill px-3 py-2">
+                        {{getTotalCount()}} item(s)
+                    </span>
+                </div>
+
+                <div ng-repeat="item in cart track by item.id">
+                    <div class="cart-item">
+                        <div class="cart-item-img">💊</div>
+
+                        <div class="flex-grow-1">
+                            
+                            <div class="cart-item-name">{{item.brand_name || item.name}}</div>
+                            <div class="cart-item-cat">{{item.category}}</div>
+                           
+                            <small class="text-muted">{{(item.price || item.unit_price) | number:2}} EGP each</small>
+                        </div>
+
+                        <div class="qty-ctrl">
+                            <button class="qty-btn" ng-click="decreaseQty(item)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="qty-num">{{item.quantity}}</span>
+                            <button class="qty-btn" ng-click="increaseQty(item)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                       
+                        <div class="cart-item-price ms-3">
+                            {{(item.quantity * (item.price || item.unit_price)) | number:2}} EGP
+                        </div>
+
+                        <button class="btn btn-outline-danger btn-sm ms-2"
+                                ng-click="removeItem(item)"
+                                title="Remove item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <a href="#!/shop" class="btn btn-outline-secondary mt-2">
+                    <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card summary-sticky">
+                    <div class="card-header">
+                        <i class="fas fa-receipt"></i> Order Summary
+                    </div>
+                    <div class="card-body">
+
+                        <div class="sum-row">
+                            <span class="lbl">Subtotal</span>
+                            <span class="fw-bold">{{getSubtotal() | number:2}} EGP</span>
+                        </div>
+                        <div class="sum-row" ng-if="discount > 0">
+                            <span class="lbl">Discount ({{appliedCode}})</span>
+                            <span class="fw-bold text-danger">-{{discount | number:2}} EGP</span>
+                        </div>
+                        <div class="sum-row">
+                            <span class="lbl">Delivery</span>
+                            <span class="fw-bold" style="color:var(--green-600)">Free</span>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="form-label">Discount Code</label>
+                            <div class="discount-row">
+                                <input type="text"
+                                       class="discount-input"
+                                       ng-model="discountCode"
+                                       placeholder="e.g. VIP10, SAVE20"
+                                       ng-keyup="$event.keyCode === 13 && applyDiscount()">
+                                <button class="btn btn-outline-success btn-sm"
+                                        ng-click="applyDiscount()"
+                                        ng-disabled="applyingDiscount">
+                                    <span ng-if="!applyingDiscount">Apply</span>
+                                    <span ng-if="applyingDiscount">
+                                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="sum-row total">
+                            <span>Total</span>
+                            <span>{{getTotal() | number:2}} EGP</span>
+                        </div>
+
+                        <button class="btn btn-primary w-100 mt-3 py-3"
+                                ng-click="proceedToCheckout()"
+                                ng-disabled="cart.length === 0 || checkingOut">
+                            <span ng-if="!checkingOut">
+                                <i class="fas fa-lock me-2"></i> Proceed to Checkout
+                            </span>
+                            <span ng-if="checkingOut">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Processing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

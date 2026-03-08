@@ -1,95 +1,218 @@
-<section class="container my-5">
+<style>
+    .container h2,
+    .container h1 {
+        font-family: 'Playfair Display', serif !important;
+        font-weight: 700 !important;
+        color: var(--teal) !important;
+        font-size: 2rem !important;
+    }
 
-    <h2 class="fw-bold mb-5" style="font-family:Verdana, Geneva, Tahoma, sans-serif; color: #412845">
-        Alerts & Suggestions
-    </h2>
+    .alerts-section { 
+        padding: 100px 0 60px; 
+    }
+    .alerts-section h2 { 
+        font-family: 'Playfair Display', serif !important; 
+        font-weight: 700 !important; color: var(--teal) !important; 
+        font-size: 2rem !important; margin-bottom: 28px; 
+    }
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <ul class="nav nav-tabs mb-3">
-                <li class="nav-item">
-                    <a class="nav-link" ng-class="{active: activeTab=='expiring'}" ng-click="activeTab='expiring'">
-                        Expiring Items
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" ng-class="{active: activeTab=='reorder'}" ng-click="activeTab='reorder'">
-                        Reorder Suggestions
-                    </a>
-                </li>
+    .alert-tabs { 
+        display: flex; gap: 8px; 
+        margin-bottom: 24px; }
+    .alert-tab { 
+        padding: 10px 24px; 
+        border-radius: 50px; 
+        border: 1.5px solid var(--green); 
+        background: transparent; color: var(--teal); 
+        font-weight: 600; font-size: 0.88rem; 
+        cursor: pointer; 
+        transition: var(--transition); 
+    }
+    .alert-tab.active, .alert-tab:hover { 
+        background: var(--green); color: white; 
+    }
 
-            </ul>
+    .alerts-card { 
+        background: white; 
+        border-radius: var(--radius-lg); 
+        box-shadow: var(--shadow-card); 
+        padding: 28px; border: 1.5px solid #f0f4f2; 
+    }
 
-            <div ng-show="activeTab=='expiring'">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Brand Name</th>
-                                <th>Batch Number</th>
-                                <th>Quantity</th>
-                                <th>Expiry Date</th>
-                                <th>Days Remaining</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="item in expiringItems">
-                                <td>{{item.brand}}</td>
-                                <td>{{item.batch}}</td>
-                                <td>{{item.quantity}}</td>
-                                <td class="text-warning fw-semibold"> {{item.expiry}} </td>
-                                <td class="text-warning">{{item.days}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    .alerts-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+    }
+    .alerts-table thead tr { 
+        background: var(--mint); 
+    }
+    .alerts-table th { 
+        padding: 14px 18px; 
+        font-size: 0.78rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 1px; color: var(--teal); 
+        border: none; 
+    }
+    .alerts-table td { 
+        padding: 14px 18px; 
+        font-size: 0.88rem; 
+        color: var(--dark); 
+        border-bottom: 1px solid #f0f4f2; 
+        vertical-align: middle; 
+    }
+    .alerts-table tbody tr:hover { 
+        background: #fafffe; 
+    }
+    .alerts-table tbody tr:last-child td { 
+        border-bottom: none; 
+    }
 
-            <div ng-show="activeTab=='reorder'">
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Drug Name</th>
-                                <th>Suggested Quantity</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            <tr ng-repeat="item in reorderSuggestions">
-                                <td>{{item.brand_name}}</td>
-                                <td>{{item.suggested_qty}}</td>
-                                <td>{{item.reason}}</td>
-                               
-                                <td>
-                                    <span class="badge bg-warning" ng-if="item.status=='pending'">
-                                        Pending
-                                    </span>
-                                    <span class="badge bg-success" ng-if="item.status=='approved'">
-                                        Approved
-                                    </span>
-                                    <span class="badge bg-danger" ng-if="item.status=='rejected'">
-                                        Rejected
-                                    </span>
-                                </td>
-                                <td ng-if="item.status=='pending'">
-                                    <a href="" class="text-success me-2">
-                                        Approve
-                                    </a>
-                                    <a href="" class="text-danger">
-                                        Reject
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    .badge-pending  { 
+        background: #fff3cd; 
+        color: #856404;    
+        padding: 4px 12px; 
+        border-radius: 20px; 
+        font-size: 0.75rem; 
+        font-weight: 600; 
+    }
+    .badge-approved { 
+        background: var(--mint); 
+        color: var(--teal); 
+        padding: 4px 12px; 
+        border-radius: 20px; 
+        font-size: 0.75rem; 
+        font-weight: 600; 
+    }
+    .badge-rejected { 
+        background: #fde8e8; 
+        color: #c0392b;    
+        padding: 4px 12px; 
+        border-radius: 20px; 
+        font-size: 0.75rem; 
+        font-weight: 600; 
+    }
+
+    .days-warn { 
+        color: #e67e22; 
+        font-weight: 600; }
+    .days-crit { 
+        color: #e74c3c; 
+        font-weight: 600; 
+    }
+
+    .action-link { 
+        font-size: 0.82rem; 
+        font-weight: 600; 
+        text-decoration: none; 
+        padding: 5px 14px; 
+        border-radius: 20px; 
+        transition: var(--transition); 
+    }
+    .action-approve { 
+        background: var(--mint); 
+        color: var(--teal); 
+    }
+    .action-approve:hover { 
+        background: var(--green); 
+        color: white; 
+    }
+    .action-reject  { 
+        background: #fde8e8; 
+        color: #c0392b; 
+    }
+    .action-reject:hover { 
+        background: #e74c3c; 
+        color: white; 
+    }
+</style>
+
+<div class="container alerts-section">
+    <h2>Alerts & Suggestions</h2>
+
+    <div class="alerts-card">
+        <div class="alert-tabs">
+            <button class="alert-tab" ng-class="{active: activeTab=='expiring'}"
+                ng-click="activeTab='expiring'">
+                <i class="bi bi-clock-history me-1"></i> Expiring Items
+            </button>
+            <button class="alert-tab" ng-class="{active: activeTab=='reorder'}"
+                ng-click="activeTab='reorder'">
+                <i class="bi bi-arrow-repeat me-1"></i> Reorder Suggestions
+            </button>
+        </div>
+
+        <div ng-show="activeTab=='expiring'">
+            <div class="table-responsive">
+                <table class="alerts-table">
+                    <thead>
+                        <tr>
+                            <th>Brand Name</th>
+                            <th>Batch Number</th>
+                            <th>Quantity</th>
+                            <th>Expiry Date</th>
+                            <th>Days Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in expiringItems">
+                            <td><strong>{{item.brand_name || item.name}}</strong></td>
+                            <td>{{item.batch_number || '—'}}</td>
+                            <td>{{item.stock_quantity}}</td>
+                            <td>{{item.expiry_date | date:'yyyy-MM-dd'}}</td>
+                            <td>
+                                <span ng-class="item.days_remaining <= 7 ? 'days-crit' : 'days-warn'">
+                                    {{item.is_expired ? 'Expired' : (item.days_remaining + ' days')}}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr ng-if="expiringItems.length === 0">
+                            <td colspan="5" class="text-center text-muted">No expired or near-expiry items.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
 
-</section>
+        <div ng-show="activeTab=='reorder'">
+            <div class="table-responsive">
+                <table class="alerts-table">
+                    <thead>
+                        <tr>
+                            <th>Drug Name</th>
+                            <th>Current Stock</th>
+                            <th>Suggested Qty</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in reorderSuggestions">
+                            <td><strong>{{item.brand_name}}</strong></td>
+                            <td>{{item.current_stock}}</td>
+                            <td>{{item.suggested_qty}}</td>
+                            <td>{{item.reason}}</td>
+                            <td>
+                                <span ng-if="item.status=='pending'"  class="badge-pending">Pending</span>
+                                <span ng-if="item.status=='approved'" class="badge-approved">Approved</span>
+                                <span ng-if="item.status=='rejected'" class="badge-rejected">Rejected</span>
+                            </td>
+                            <td ng-if="item.status=='pending'">
+                                <button type="button" class="action-link action-approve me-2 border-0"
+                                        ng-click="setSuggestionStatus(item, 'approved')">Approve</button>
+                                <button type="button" class="action-link action-reject border-0"
+                                        ng-click="setSuggestionStatus(item, 'rejected')">Reject</button>
+                            </td>
+                            <td ng-if="item.status!='pending'">—</td>
+                        </tr>
+                        <tr ng-if="reorderSuggestions.length === 0">
+                            <td colspan="6" class="text-center text-muted">No out-of-stock items found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

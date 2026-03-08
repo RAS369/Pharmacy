@@ -1,0 +1,69 @@
+<div class="admin-feature" ng-controller="PurchaseHistoryController">
+    <h2 class="page-title">User Purchase History</h2>
+
+    <div class="purchase-layout">
+        <div class="customer-panel">
+            <div class="customer-panel-header">Select Customer</div>
+            <div class="customer-search-wrap">
+                <input type="text" placeholder="Search customers..."
+                    ng-model="customerSearch" ng-change="onCustomerSearch()" />
+            </div>
+
+            <div class="loading-inline" ng-if="loadingCustomers">Loading...</div>
+
+            <div class="customer-list" ng-if="!loadingCustomers">
+                <div class="customer-item" ng-repeat="c in customers"
+                    ng-click="selectCustomer(c)"
+                    ng-class="{ selected: selectedCustomer && selectedCustomer.id === c.id }">
+                    <div class="customer-avatar">{{ (c.name || '?').charAt(0).toUpperCase() }}</div>
+                    <div class="customer-info">
+                        <div class="c-name">{{ c.name }}</div>
+                        <div class="c-email">{{ c.email }}</div>
+                    </div>
+                </div>
+                <div class="loading-inline" ng-if="customers.length === 0">No customers found.</div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="empty-state" ng-if="!selectedCustomer">
+                <p>Select a customer to view purchase history.</p>
+            </div>
+            <div class="empty-state" ng-if="selectedCustomer && loadingPurchases">
+                <p>Loading purchase history...</p>
+            </div>
+            <div class="empty-state" ng-if="errorMessage">
+                <p class="error-msg">{{ errorMessage }}</p>
+            </div>
+            <table class="admin-table" ng-if="selectedCustomer && !loadingPurchases && purchases.length > 0">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total (EGP)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in purchases">
+                        <td><strong>#{{ p.id }}</strong></td>
+                        <td>{{ p.date | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ p.items_count }}</td>
+                        <td><strong>{{ p.total | currency:'EGP ' }}</strong></td>
+                        <td>
+                            <span class="badge" ng-class="{
+                                'badge-paid': p.status === 'paid',
+                                'badge-pending': p.status === 'pending',
+                                'badge-refunded': p.status === 'refunded'
+                            }">{{ p.status }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="empty-state" ng-if="selectedCustomer && !loadingPurchases && purchases.length === 0 && !errorMessage">
+                <p>No purchases found for <strong>{{ selectedCustomer.name }}</strong>.</p>
+            </div>
+        </div>
+    </div>
+</div>

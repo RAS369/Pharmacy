@@ -1,23 +1,154 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
+
+<head>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/medcore.css">
+    <link rel="stylesheet" href="css/navFoot.css">
+    <link rel="stylesheet" href="css/admin-pages.css">
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+            corePlugins: {
+                preflight: false,
+                visibility: false
+            }
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    
+    <script src="medcore-config.js"></script>
     <script src="app.js"></script>
+    
+    <script src="js/cart.js"></script>
+    <script src="js/checkout.js"></script>
+    <script src="js/confirmation.js"></script>
+    <script src="js/profile.js"></script>
     <script src="services/categoryService.js"></script>
     <script src="services/medicineService.js"></script>
     <script src="services/authService.js"></script>
     <script src="services/alertService.js"></script>
+    <script src="services/salesInvoicesService.js"></script>
+    <script src="services/usersService.js"></script>
+    <script src="services/purchaseHistoryService.js"></script>
     <script src="controllers/HomeCtrl.js"></script>
     <script src="controllers/DashCtrl.js"></script>
     <script src="controllers/AlertCtrl.js"></script>
     <script src="controllers/RegisterCtrl.js"></script>
     <script src="controllers/LoginCtrl.js"></script>
+    <script src="controllers/shopController.js"></script>
+    <script src="controllers/InventoryCtrl.js"></script>
+    <script src="controllers/salesInvoicesController.js"></script>
+    <script src="controllers/usersController.js"></script>
+    <script src="controllers/purchaseHistoryController.js"></script>
 
-    <body class="bg-light">
+</head>
+
+<body class="bg-light">
+
+    <div ng-if="!isAdminRoute">
         <div>
-            <div ng-view></div>
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-lg custom-navbar">
+                    <div class="container-fluid">
+                        <a class="navbar-brand logo" href="#!/home">MEDCORE</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#!/home">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link shop-link" href="#!/shop">Shop</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active fw-bold" href="#!/aboutus">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#!/contactus">Contact Us</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex align-items-center navbar-actions">
+                            <a href="#!/cart" class="cart-btn">
+                                <i class="bi bi-cart3"></i>
+                                <span class="ms-1">({{cartCount || 0}})</span>
+                            </a>
+
+                            <a href="#!/profile" class="cart-btn me-2" ng-if="isLoggedIn" title="Profile">
+                                <i class="bi bi-person-circle"></i>
+                            </a>
+
+                            <span class="me-2 fw-semibold" ng-if="isLoggedIn">
+                                Hello, {{displayName}}
+                            </span>
+
+                            <a href="#!/login" class="btn btn-outline-success me-2" ng-if="!isLoggedIn">
+                                Log In
+                            </a>
+                            <a href="#!/register" class="btn btn-success" ng-if="!isLoggedIn">
+                                Sign Up
+                            </a>
+                            <button type="button" class="btn btn-outline-danger" ng-if="isLoggedIn" ng-click="logout()">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+
+                </nav>
+            </div>
+
         </div>
-    </body>
-    </html>
+        <div ng-view></div>
+        <footer class="container-fluid px-0">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="mx-2">MEDCORE Pharmacy</h4>
+                    <p class="mx-2">Your trusted healthcare marketplace.</p>
+                </div>
+
+                <div class="col-md-6 footer-links text-md-end">
+                    <a href="#!/home">Home</a>
+                    <a href="#!/aboutus">About</a>
+                    <a href="#!/contactus">Contact</a>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center mt-3">
+                © 2026 Medcore Pharmacy. All rights reserved.
+            </p>
+
+        </footer>
+    </div>
+
+    <div ng-if="isAdminRoute">
+        <nav class="admin-navbar">
+            <div class="admin-brand">
+                <i class="bi bi-shield-check"></i> MedCore Admin
+            </div>
+            <div class="admin-nav-links">
+                <a href="#!/dashboard">Dashboard</a>
+                <a href="#!/alerts">Alerts</a>
+                <a href="#!/inventory">Inventory</a>
+                <a href="#!/sales-invoices">Sales Invoices</a>
+                <a href="#!/users">Users</a>
+                <a href="#!/purchase-history">Purchase History</a>
+            </div>
+            <button ng-click="logout()">Logout</button>
+        </nav>
+        <div ng-view></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

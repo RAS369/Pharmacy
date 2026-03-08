@@ -1,0 +1,219 @@
+﻿
+<div class="toast-stack">
+    <div class="toast-msg" ng-class="'toast-' + toast.type" ng-repeat="toast in toasts">
+        <i class="fas" ng-class="{
+            'fa-check-circle':       toast.type === 'success',
+            'fa-exclamation-circle': toast.type === 'error',
+            'fa-info-circle':        toast.type === 'info'
+        }"></i>
+        {{toast.message}}
+    </div>
+</div> 
+
+
+<!-- PRODUCTS -->
+<div class="max-w-6xl mx-auto mt-10">
+
+<h1 class="text-2xl font-bold mb-6">Our Products</h1>
+
+<div class="bg-white p-4 rounded-lg shadow mb-6">
+<div class="row g-3">
+
+<!-- SEARCH -->
+<div class="col-md-3">
+    <input type="text" class="form-control"
+           placeholder="Search by brand or generic name"
+           ng-model="searchText">
+</div>
+
+<!-- CATEGORY -->
+<div class="col-md-3">
+    <select class="form-select" ng-model="selectedCategory">
+        <option value="">All Categories</option>
+        <option value="Medicine">Medicine</option>
+        <option value="Health Care">Health Care</option>
+        <option value="Hair Care">Hair Care</option>
+        <option value="Vitamins & Supplements">Vitamins & Supplements</option>
+    </select>
+</div>
+
+<!-- SORT -->
+<div class="col-md-3">
+    <select class="form-select" ng-model="sortOption">
+        <option value="">Sort By</option>
+        <option value="brand_name">Name (A-Z)</option>
+        <option value="-brand_name">Name (Z-A)</option>
+        <option value="price">Price Low → High</option>
+        <option value="-price">Price High → Low</option>
+    </select>
+</div>
+
+<!-- MAX PRICE -->
+<div class="col-md-3">
+    <input type="number" class="form-control"
+           placeholder="Max Price"
+           ng-model="maxPrice">
+</div>
+
+</div>
+</div>
+
+
+<!-- MEDICINE -->
+<h2 class="text-xl font-semibold mb-4"
+    ng-if="!selectedCategory || selectedCategory=='Medicine'">
+    Medicine
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-white rounded-xl p-4 shadow-sm border text-center"
+     ng-repeat="p in medicines | filter:searchFilter | orderBy:sortOption"
+     ng-if="p.category=='Medicine' && (!selectedCategory || selectedCategory=='Medicine')">
+
+    <div class="h-40 flex items-center justify-center mb-3">
+        <img ng-src="{{p.image_url}}" class="h-36 object-contain">
+    </div>
+    <p class="text-xs font-bold text-emerald-600 uppercase">{{p.brand_name}}</p>
+    <p class="text-xs text-gray-500 italic">{{p.generic_name}}</p>
+    <p class="text-base font-bold mt-2">{{p.price}} EGP</p>
+    <p class="text-xs font-semibold" ng-class="{
+        'text-red-500':    p.stock_quantity == 0,
+        'text-orange-500': p.stock_quantity > 0 && p.stock_quantity <= 3,
+        'text-gray-400':   p.stock_quantity > 3
+    }">
+        {{p.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + p.stock_quantity)}}
+    </p>
+    <div class="mt-3">
+        <button ng-if="!p.cartQty" ng-click="addToCart(p)"
+                class="bg-emerald-500 text-white px-3 py-1 rounded-lg">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <div ng-if="p.cartQty" class="flex items-center gap-2">
+            <button ng-click="decreaseQty(p)" class="bg-gray-200 px-2 rounded">-</button>
+            <span>{{p.cartQty}}</span>
+            <button ng-click="increaseQty(p)" class="bg-gray-200 px-2 rounded">+</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- HEALTH CARE -->
+<h2 class="text-xl font-semibold mb-4"
+    ng-if="!selectedCategory || selectedCategory=='Health Care'">
+    Health Care
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-white rounded-xl p-4 shadow-sm border text-center"
+     ng-repeat="p in medicines | filter:searchFilter | orderBy:sortOption"
+     ng-if="(!selectedCategory || selectedCategory=='Health Care') && p.category=='Health Care'">
+
+    <div class="h-40 flex items-center justify-center mb-3">
+        <img ng-src="{{p.image_url}}" class="h-36 object-contain">
+    </div>
+    <p class="text-xs font-bold text-emerald-600 uppercase">{{p.brand_name}}</p>
+    <p class="text-xs text-gray-500 italic">{{p.generic_name}}</p>
+    <p class="text-base font-bold mt-2">{{p.price}} EGP</p>
+    <p class="text-xs font-semibold" ng-class="{
+        'text-red-500':    p.stock_quantity == 0,
+        'text-orange-500': p.stock_quantity > 0 && p.stock_quantity <= 3,
+        'text-gray-400':   p.stock_quantity > 3
+    }">
+        {{p.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + p.stock_quantity)}}
+    </p>
+    <div class="mt-3">
+        <button ng-if="!p.cartQty" ng-click="addToCart(p)"
+                class="bg-emerald-500 text-white px-3 py-1 rounded-lg">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <div ng-if="p.cartQty" class="flex items-center gap-2">
+            <button ng-click="decreaseQty(p)" class="bg-gray-200 px-2 rounded">-</button>
+            <span>{{p.cartQty}}</span>
+            <button ng-click="increaseQty(p)" class="bg-gray-200 px-2 rounded">+</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- HAIR CARE -->
+<h2 class="text-xl font-semibold mb-4"
+    ng-if="!selectedCategory || selectedCategory=='Hair Care'">
+    Hair Care
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-white rounded-xl p-4 shadow-sm border text-center"
+     ng-repeat="p in medicines | filter:searchFilter | orderBy:sortOption"
+     ng-if="(!selectedCategory || selectedCategory=='Hair Care') && p.category=='Hair Care'">
+
+    <div class="h-40 flex items-center justify-center mb-3">
+        <img ng-src="{{p.image_url}}" class="h-36 object-contain">
+    </div>
+    <p class="text-xs font-bold text-emerald-600 uppercase">{{p.brand_name}}</p>
+    <p class="text-xs text-gray-500 italic">{{p.generic_name}}</p>
+    <p class="text-base font-bold mt-2">{{p.price}} EGP</p>
+    <p class="text-xs font-semibold" ng-class="{
+        'text-red-500':    p.stock_quantity == 0,
+        'text-orange-500': p.stock_quantity > 0 && p.stock_quantity <= 3,
+        'text-gray-400':   p.stock_quantity > 3
+    }">
+        {{p.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + p.stock_quantity)}}
+    </p>
+    <div class="mt-3">
+        <button ng-if="!p.cartQty" ng-click="addToCart(p)"
+                class="bg-emerald-500 text-white px-3 py-1 rounded-lg">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <div ng-if="p.cartQty" class="flex items-center gap-2">
+            <button ng-click="decreaseQty(p)" class="bg-gray-200 px-2 rounded">-</button>
+            <span>{{p.cartQty}}</span>
+            <button ng-click="increaseQty(p)" class="bg-gray-200 px-2 rounded">+</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- VITAMINS & SUPPLEMENTS -->
+<!-- ✅ FIX: was 'Vitamins' — must match the dropdown value exactly -->
+<h2 class="text-xl font-semibold mb-4"
+    ng-if="!selectedCategory || selectedCategory=='Vitamins & Supplements'">
+    Vitamins & Supplements
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-white rounded-xl p-4 shadow-sm border text-center"
+     ng-repeat="p in medicines | filter:searchFilter | orderBy:sortOption"
+     ng-if="(!selectedCategory || selectedCategory=='Vitamins & Supplements') && p.category=='Vitamins & Supplements'">
+
+    <div class="h-40 flex items-center justify-center mb-3">
+        <img ng-src="{{p.image_url}}" class="h-36 object-contain">
+    </div>
+    <p class="text-xs font-bold text-emerald-600 uppercase">{{p.brand_name}}</p>
+    <p class="text-xs text-gray-500 italic">{{p.generic_name}}</p>
+    <p class="text-base font-bold mt-2">{{p.price}} EGP</p>
+    <p class="text-xs font-semibold" ng-class="{
+        'text-red-500':    p.stock_quantity == 0,
+        'text-orange-500': p.stock_quantity > 0 && p.stock_quantity <= 3,
+        'text-gray-400':   p.stock_quantity > 3
+    }">
+        {{p.stock_quantity == 0 ? 'Out of Stock' : ('Stock: ' + p.stock_quantity)}}
+    </p>
+    <div class="mt-3">
+        <button ng-if="!p.cartQty" ng-click="addToCart(p)"
+                class="bg-emerald-500 text-white px-3 py-1 rounded-lg">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <div ng-if="p.cartQty" class="flex items-center gap-2">
+            <button ng-click="decreaseQty(p)" class="bg-gray-200 px-2 rounded">-</button>
+            <span>{{p.cartQty}}</span>
+            <button ng-click="increaseQty(p)" class="bg-gray-200 px-2 rounded">+</button>
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+</div>
